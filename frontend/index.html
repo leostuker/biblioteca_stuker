@@ -15,6 +15,7 @@
 	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body data-pagina="catalogo">
+	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
@@ -33,7 +34,7 @@
 
 		<p id="mensagem" class="mensagem" role="status" hidden></p>
 
-		<form id="filtros" class="filtros">
+		<form id="filtros" class="filtros" method="get" action="/">
 			<label class="busca">Buscar
 				<input type="search" name="busca" placeholder="Título, autor ou ISBN">
 			</label>
