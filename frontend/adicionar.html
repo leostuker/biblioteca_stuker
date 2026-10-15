@@ -5,35 +5,40 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Adicionar livro — Biblioteca Stüker</title>
 	<meta name="description" content="Cadastro de livros por ISBN ou código de barras.">
+	<link rel="canonical" href="/adicionar">
 	<meta property="og:title" content="Adicionar livro — Biblioteca Stüker">
 	<meta property="og:description" content="Cadastro de livros por ISBN ou código de barras.">
 	<meta property="og:type" content="website">
+	<meta property="og:image" content="/static/favicon.svg">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
+	<script src="/static/app.js" defer></script>
 </head>
 <body data-pagina="adicionar">
-	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+	<a href="#main-content" class="pular-conteudo">Ir para o conteúdo principal</a>
+
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
 	</header>
 
-	<main id="main-content">
-		<p id="mensagem" class="mensagem" role="status" hidden></p>
+	<main id="main-content" tabindex="-1">
+		<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
 
-		<section class="bloco">
-			<h2>Buscar por ISBN</h2>
-			<div id="area-scanner" class="area-scanner" hidden>
+		<section class="bloco" aria-labelledby="titulo-busca-isbn">
+			<h2 id="titulo-busca-isbn">Buscar por ISBN</h2>
+			<div id="area-scanner" class="area-scanner" role="region" aria-label="Leitor de código de barras" hidden>
 				<video id="video-scanner" playsinline muted hidden></video>
 				<div id="leitor-alternativo" hidden></div>
 				<button id="botao-fechar-scanner" class="botao secundario" type="button">Fechar câmera</button>
 			</div>
 			<div class="formulario">
 				<label class="campo">ISBN
-					<input type="text" id="isbn-busca" inputmode="numeric" maxlength="20" placeholder="Ex: 9788535902778">
+					<input type="text" id="isbn-busca" inputmode="numeric" maxlength="20" placeholder="Ex: 9788535902778" autocomplete="off">
 				</label>
 				<div class="linha-campos">
 					<button id="botao-buscar" class="botao" type="button">Buscar dados</button>
@@ -42,9 +47,9 @@
 			</div>
 		</section>
 
-		<section class="bloco">
-			<h2>Dados do livro</h2>
-			<form id="form-livro" class="formulario">
+		<section class="bloco" aria-labelledby="titulo-dados-livro">
+			<h2 id="titulo-dados-livro">Dados do livro</h2>
+			<form id="form-livro" class="formulario" method="post" action="/api/livros">
 				<div class="linha-campos">
 					<label class="campo">Título
 						<input type="text" name="titulo" required maxlength="255">
@@ -83,6 +88,5 @@
 	<footer>
 		<p>© 2026 — Biblioteca Stüker</p>
 	</footer>
-	<script src="/static/app.js"></script>
 </body>
 </html>

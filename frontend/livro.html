@@ -7,28 +7,31 @@
 	<meta name="description" content="Detalhes, diário de leitura e resenhas do livro.">
 	<meta property="og:title" content="Livro — Biblioteca Stüker">
 	<meta property="og:description" content="Detalhes, diário de leitura e resenhas do livro.">
-	<meta property="og:type" content="website">
+	<meta property="og:type" content="book">
+	<meta property="og:image" content="/static/favicon.svg">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
+	<script src="/static/app.js" defer></script>
 </head>
 <body data-pagina="livro">
-	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+	<a href="#main-content" class="pular-conteudo">Ir para o conteúdo principal</a>
+
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
 	</header>
 
-	<main id="main-content">
-		<p id="mensagem" class="mensagem" role="status" hidden></p>
+	<main id="main-content" tabindex="-1">
+		<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
 		<div id="detalhes"></div>
 	</main>
 
 	<footer>
 		<p>© 2026 — Biblioteca Stüker</p>
 	</footer>
-	<script src="/static/app.js"></script>
 </body>
 </html>

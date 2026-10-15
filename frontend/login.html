@@ -5,28 +5,33 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Entrar — Biblioteca Stüker</title>
 	<meta name="description" content="Entre ou crie sua conta para registrar suas leituras.">
+	<link rel="canonical" href="/login">
 	<meta property="og:title" content="Entrar — Biblioteca Stüker">
 	<meta property="og:description" content="Entre ou crie sua conta para registrar suas leituras.">
 	<meta property="og:type" content="website">
+	<meta property="og:image" content="/static/favicon.svg">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
+	<script src="/static/app.js" defer></script>
 </head>
 <body data-pagina="login">
-	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+	<a href="#main-content" class="pular-conteudo">Ir para o conteúdo principal</a>
+
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
 	</header>
 
-	<main id="main-content">
-		<p id="mensagem" class="mensagem" role="status" hidden></p>
+	<main id="main-content" tabindex="-1">
+		<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
 
-		<section class="bloco">
-			<h2>Entrar</h2>
-			<form id="form-entrar" class="formulario">
+		<section class="bloco" aria-labelledby="titulo-entrar">
+			<h2 id="titulo-entrar">Entrar</h2>
+			<form id="form-entrar" class="formulario" method="post" action="/api/auth/login">
 				<label class="campo">E-mail
 					<input type="email" name="email" required autocomplete="username">
 				</label>
@@ -37,9 +42,9 @@
 			</form>
 		</section>
 
-		<section class="bloco">
-			<h2>Criar conta</h2>
-			<form id="form-cadastro" class="formulario">
+		<section class="bloco" aria-labelledby="titulo-criar-conta">
+			<h2 id="titulo-criar-conta">Criar conta</h2>
+			<form id="form-cadastro" class="formulario" method="post" action="/api/auth/cadastro">
 				<div class="linha-campos">
 					<label class="campo">Nome
 						<input type="text" name="nome" required maxlength="255">
@@ -62,6 +67,5 @@
 	<footer>
 		<p>© 2026 — Biblioteca Stüker</p>
 	</footer>
-	<script src="/static/app.js"></script>
 </body>
 </html>

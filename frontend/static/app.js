@@ -6,6 +6,8 @@ const ROTULOS_STATUS = {
 };
 
 let usuarioAtual = null;
+let fluxoCameraAtivo = null;
+let leitorAlternativoAtivo = null;
 
 async function chamarApi(caminho, metodo = "GET", corpo = null) {
 	const opcoes = { method: metodo, credentials: "same-origin", headers: {} };
@@ -52,9 +54,13 @@ function dataEmDias(dias) {
 	return new Date(Date.now() + dias * 86400000).toLocaleDateString("sv-SE");
 }
 
-function textoEstrelas(nota) {
-	const inteira = Math.round(Number(nota) || 0);
-	return "★".repeat(inteira) + "☆".repeat(5 - inteira);
+function criarElementoEstrelas(nota) {
+	const valor = Math.max(0, Math.min(5, Math.round(Number(nota) || 0)));
+	return criar("span", {
+		classe: "estrelas",
+		role: "img",
+		"aria-label": `Avaliação: ${valor} de 5 estrelas`,
+	}, `${"★".repeat(valor)}${"☆".repeat(5 - valor)} ${Number(nota).toFixed(1)}`);
 }
 
 function valorOuNulo(valor) {
@@ -142,7 +148,7 @@ function criarCartaoLivro(livro) {
 		criar("div", { classe: "corpo" },
 			criar("h3", {}, livro.titulo),
 			criar("span", { classe: "autor" }, livro.autor),
-			livro.nota_media && criar("span", { classe: "estrelas", "aria-label": `Nota média ${livro.nota_media}` }, `${textoEstrelas(livro.nota_media)} ${livro.nota_media}`),
+			livro.nota_media && criarElementoEstrelas(livro.nota_media),
 			etiquetas
 		)
 	);
@@ -194,7 +200,7 @@ function blocoCabecalhoLivro(livro) {
 		criar("div", { classe: "metadados" },
 			criar("h1", {}, livro.titulo),
 			criar("p", { classe: "autor" }, livro.autor),
-			livro.nota_media && criar("p", { classe: "estrelas" }, `${textoEstrelas(livro.nota_media)} ${livro.nota_media} (${livro.total_notas} ${livro.total_notas === 1 ? "nota" : "notas"})`),
+			livro.nota_media && criarElementoEstrelas(livro.nota_media),
 			criar("div", { classe: "etiquetas" },
 				criar("span", { classe: `etiqueta ${livro.disponivel ? "disponivel" : "emprestado"}` }, livro.disponivel ? "Disponível" : "Emprestado")
 			),
@@ -253,7 +259,7 @@ function blocoResenhas(livro) {
 			criar("div", { classe: "resenha" },
 				criar("div", { classe: "cabecalho-resenha" },
 					criar("strong", {}, avaliacao.nome),
-					criar("span", { classe: "estrelas" }, avaliacao.nota ? textoEstrelas(avaliacao.nota) : ROTULOS_STATUS[avaliacao.status])
+					avaliacao.nota ? criarElementoEstrelas(avaliacao.nota) : criar("span", { classe: "etiqueta leitura" }, ROTULOS_STATUS[avaliacao.status])
 				),
 				avaliacao.resenha && criar("p", { classe: "texto-editorial" }, avaliacao.resenha)
 			)
@@ -398,7 +404,42 @@ function carregarScript(url) {
 	});
 }
 
-let pararScanner = () => {};
+async function encerrarScanner() {
+	if (fluxoCameraAtivo) {
+		fluxoCameraAtivo.getTracks().forEach((faixa) => faixa.stop());
+		fluxoCameraAtivo = null;
+	}
+	if (leitorAlternativoAtivo) {
+		try {
+			await leitorAlternativoAtivo.stop();
+			leitorAlternativoAtivo.clear();
+		} catch {
+			leitorAlternativoAtivo = null;
+		}
+		leitorAlternativoAtivo = null;
+	}
+	const video = document.getElementById("video-scanner");
+	if (video) {
+		video.pause();
+		video.srcObject = null;
+		video.hidden = true;
+	}
+	const alternativo = document.getElementById("leitor-alternativo");
+	if (alternativo) {
+		alternativo.hidden = true;
+	}
+	const area = document.getElementById("area-scanner");
+	if (area) {
+		area.hidden = true;
+	}
+}
+
+window.addEventListener("pagehide", encerrarScanner);
+document.addEventListener("keydown", (evento) => {
+	if (evento.key === "Escape" && fluxoCameraAtivo) {
+		encerrarScanner();
+	}
+});
 
 async function iniciarScanner(aoLerCodigo) {
 	const area = document.getElementById("area-scanner");
@@ -406,24 +447,18 @@ async function iniciarScanner(aoLerCodigo) {
 	const alternativo = document.getElementById("leitor-alternativo");
 	area.hidden = false;
 	const finalizar = (codigo) => {
-		pararScanner();
+		encerrarScanner();
 		aoLerCodigo(codigo);
 	};
 	if ("BarcodeDetector" in window) {
 		const fluxo = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+		fluxoCameraAtivo = fluxo;
 		const detector = new BarcodeDetector({ formats: ["ean_13", "ean_8"] });
-		let ativo = true;
 		video.hidden = false;
 		video.srcObject = fluxo;
 		await video.play();
-		pararScanner = () => {
-			ativo = false;
-			fluxo.getTracks().forEach((faixa) => faixa.stop());
-			video.hidden = true;
-			area.hidden = true;
-		};
 		const ciclo = async () => {
-			if (!ativo) return;
+			if (!fluxoCameraAtivo) return;
 			const codigos = await detector.detect(video);
 			if (codigos.length > 0) return finalizar(codigos[0].rawValue);
 			requestAnimationFrame(ciclo);
@@ -433,10 +468,7 @@ async function iniciarScanner(aoLerCodigo) {
 	}
 	await carregarScript("https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js");
 	const leitor = new Html5Qrcode("leitor-alternativo");
-	pararScanner = () => {
-		leitor.stop().then(() => leitor.clear());
-		area.hidden = true;
-	};
+	leitorAlternativoAtivo = leitor;
 	alternativo.hidden = false;
 	await leitor.start({ facingMode: "environment" }, { fps: 10 }, (texto) => finalizar(texto));
 }
@@ -474,11 +506,11 @@ async function paginaAdicionar() {
 			document.getElementById("isbn-busca").value = codigo;
 			buscarIsbn();
 		}).catch(() => {
-			pararScanner();
+			encerrarScanner();
 			mostrarMensagem("Não foi possível usar a câmera. Verifique a permissão ou digite o ISBN.", true);
 		})
 	);
-	document.getElementById("botao-fechar-scanner").addEventListener("click", () => pararScanner());
+	document.getElementById("botao-fechar-scanner").addEventListener("click", () => encerrarScanner());
 
 	formulario.addEventListener("submit", (evento) => {
 		evento.preventDefault();

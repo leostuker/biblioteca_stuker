@@ -3,40 +3,57 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Biblioteca Stüker</title>
+	<title>Biblioteca Stüker — Acervo e Diário de Leitura</title>
 	<meta name="description" content="Acervo pessoal, diário de leitura e controle de empréstimos da Biblioteca Stüker.">
+	<link rel="canonical" href="/">
 	<meta property="og:title" content="Biblioteca Stüker">
 	<meta property="og:description" content="Acervo pessoal, diário de leitura e controle de empréstimos.">
 	<meta property="og:type" content="website">
+	<meta property="og:url" content="/">
+	<meta property="og:image" content="/static/favicon.svg">
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Biblioteca Stüker">
+	<meta name="twitter:description" content="Acervo pessoal, diário de leitura e controle de empréstimos.">
 	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		"name": "Biblioteca Stüker",
+		"description": "Acervo pessoal, diário de leitura e controle de empréstimos da Biblioteca Stüker.",
+		"inLanguage": "pt-BR"
+	}
+	</script>
+	<script src="/static/app.js" defer></script>
 </head>
 <body data-pagina="catalogo">
-	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+	<a href="#main-content" class="pular-conteudo">Ir para o conteúdo principal</a>
+
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
 	</header>
 
-	<main id="main-content">
+	<main id="main-content" tabindex="-1">
 		<div class="hero-banner">
 			<h2>Biblioteca</h2>
 			<p class="subtitulo">Um acervo, muitas leituras.</p>
-			<ul class="contadores">
+			<ul class="contadores" aria-label="Resumo do acervo">
 				<li><strong id="total-livros">0</strong>livros</li>
 				<li><strong id="total-lidos">0</strong>leituras concluídas</li>
 				<li><strong id="total-emprestados">0</strong>emprestados</li>
 			</ul>
 		</div>
 
-		<p id="mensagem" class="mensagem" role="status" hidden></p>
+		<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
 
-		<form id="filtros" class="filtros" method="get" action="/">
+		<form id="filtros" class="filtros" method="get" action="/" role="search" aria-label="Filtrar livros do acervo">
 			<label class="busca">Buscar
-				<input type="search" name="busca" placeholder="Título, autor ou ISBN">
+				<input type="search" name="busca" placeholder="Título, autor ou ISBN" autocomplete="off">
 			</label>
 			<label>Gênero
 				<select name="genero" id="filtro-genero">
@@ -62,12 +79,11 @@
 			<button class="botao" type="submit">Filtrar</button>
 		</form>
 
-		<section id="grade-livros" class="grade-livros" aria-live="polite"></section>
+		<section id="grade-livros" class="grade-livros" aria-live="polite" aria-label="Catálogo de livros"></section>
 	</main>
 
 	<footer>
 		<p>© 2026 — Biblioteca Stüker</p>
 	</footer>
-	<script src="/static/app.js"></script>
 </body>
 </html>

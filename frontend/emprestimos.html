@@ -5,27 +5,32 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Empréstimos — Biblioteca Stüker</title>
 	<meta name="description" content="Controle de empréstimos de livros da Biblioteca Stüker.">
+	<link rel="canonical" href="/emprestimos">
 	<meta property="og:title" content="Empréstimos — Biblioteca Stüker">
 	<meta property="og:description" content="Controle de empréstimos de livros.">
 	<meta property="og:type" content="website">
+	<meta property="og:image" content="/static/favicon.svg">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
+	<script src="/static/app.js" defer></script>
 </head>
 <body data-pagina="emprestimos">
-	<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+	<a href="#main-content" class="pular-conteudo">Ir para o conteúdo principal</a>
+
 	<header>
 		<h1><a href="/">Biblioteca Stüker</a></h1>
 		<nav id="navegacao" aria-label="Navegação principal"></nav>
 	</header>
 
-	<main id="main-content">
-		<p id="mensagem" class="mensagem" role="status" hidden></p>
+	<main id="main-content" tabindex="-1">
+		<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
 
-		<section class="bloco">
-			<h2>Empréstimos</h2>
+		<section class="bloco" aria-labelledby="titulo-emprestimos">
+			<h2 id="titulo-emprestimos">Empréstimos</h2>
 			<div class="tabela-rolavel">
 				<table>
 					<thead>
@@ -43,9 +48,9 @@
 			</div>
 		</section>
 
-		<section id="bloco-novo-usuario" class="bloco" hidden>
-			<h2>Cadastrar pessoa</h2>
-			<form id="form-novo-usuario" class="formulario">
+		<section id="bloco-novo-usuario" class="bloco" aria-labelledby="titulo-novo-usuario" hidden>
+			<h2 id="titulo-novo-usuario">Cadastrar pessoa</h2>
+			<form id="form-novo-usuario" class="formulario" method="post" action="/api/usuarios">
 				<div class="linha-campos">
 					<label class="campo">Nome
 						<input type="text" name="nome" required maxlength="255">
@@ -70,6 +75,5 @@
 	<footer>
 		<p>© 2026 — Biblioteca Stüker</p>
 	</footer>
-	<script src="/static/app.js"></script>
 </body>
 </html>
