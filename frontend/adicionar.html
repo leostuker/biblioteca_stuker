@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Adicionar livro — Biblioteca Stüker</title>
+	<meta name="description" content="Cadastro de livros por ISBN ou código de barras.">
+	<meta property="og:title" content="Adicionar livro — Biblioteca Stüker">
+	<meta property="og:description" content="Cadastro de livros por ISBN ou código de barras.">
+	<meta property="og:type" content="website">
+	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-pagina="adicionar">
+	<header>
+		<h1><a href="/">Biblioteca Stüker</a></h1>
+		<nav id="navegacao" aria-label="Navegação principal"></nav>
+	</header>
+
+	<main id="main-content">
+		<p id="mensagem" class="mensagem" role="status" hidden></p>
+
+		<section class="bloco">
+			<h2>Buscar por ISBN</h2>
+			<div id="area-scanner" class="area-scanner" hidden>
+				<video id="video-scanner" playsinline muted hidden></video>
+				<div id="leitor-alternativo" hidden></div>
+				<button id="botao-fechar-scanner" class="botao secundario" type="button">Fechar câmera</button>
+			</div>
+			<div class="formulario">
+				<label class="campo">ISBN
+					<input type="text" id="isbn-busca" inputmode="numeric" maxlength="20" placeholder="Ex: 9788535902778">
+				</label>
+				<div class="linha-campos">
+					<button id="botao-buscar" class="botao" type="button">Buscar dados</button>
+					<button id="botao-scanner" class="botao secundario" type="button">Escanear código de barras</button>
+				</div>
+			</div>
+		</section>
+
+		<section class="bloco">
+			<h2>Dados do livro</h2>
+			<form id="form-livro" class="formulario">
+				<div class="linha-campos">
+					<label class="campo">Título
+						<input type="text" name="titulo" required maxlength="255">
+					</label>
+					<label class="campo">Autor
+						<input type="text" name="autor" required maxlength="255">
+					</label>
+				</div>
+				<div class="linha-campos">
+					<label class="campo">Gênero
+						<input type="text" name="genero" maxlength="100">
+					</label>
+					<label class="campo">Ano de publicação
+						<input type="number" name="ano_publicacao" min="0" max="3000">
+					</label>
+					<label class="campo">Páginas
+						<input type="number" name="numero_paginas" min="1">
+					</label>
+				</div>
+				<div class="linha-campos">
+					<label class="campo">ISBN
+						<input type="text" name="isbn" maxlength="20">
+					</label>
+					<label class="campo">URL da capa
+						<input type="url" name="url_capa">
+					</label>
+				</div>
+				<label class="campo">Sinopse
+					<textarea name="sinopse"></textarea>
+				</label>
+				<button class="botao" type="submit">Salvar no acervo</button>
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<p>© 2026 — Biblioteca Stüker</p>
+	</footer>
+	<script src="/static/app.js"></script>
+</body>
+</html>

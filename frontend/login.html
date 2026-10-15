@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Entrar — Biblioteca Stüker</title>
+	<meta name="description" content="Entre ou crie sua conta para registrar suas leituras.">
+	<meta property="og:title" content="Entrar — Biblioteca Stüker">
+	<meta property="og:description" content="Entre ou crie sua conta para registrar suas leituras.">
+	<meta property="og:type" content="website">
+	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-pagina="login">
+	<header>
+		<h1><a href="/">Biblioteca Stüker</a></h1>
+		<nav id="navegacao" aria-label="Navegação principal"></nav>
+	</header>
+
+	<main id="main-content">
+		<p id="mensagem" class="mensagem" role="status" hidden></p>
+
+		<section class="bloco">
+			<h2>Entrar</h2>
+			<form id="form-entrar" class="formulario">
+				<label class="campo">E-mail
+					<input type="email" name="email" required autocomplete="username">
+				</label>
+				<label class="campo">Senha
+					<input type="password" name="senha" required autocomplete="current-password">
+				</label>
+				<button class="botao" type="submit">Entrar</button>
+			</form>
+		</section>
+
+		<section class="bloco">
+			<h2>Criar conta</h2>
+			<form id="form-cadastro" class="formulario">
+				<div class="linha-campos">
+					<label class="campo">Nome
+						<input type="text" name="nome" required maxlength="255">
+					</label>
+					<label class="campo">Telefone (opcional)
+						<input type="tel" name="telefone" maxlength="50">
+					</label>
+				</div>
+				<label class="campo">E-mail
+					<input type="email" name="email" required maxlength="255" autocomplete="email">
+				</label>
+				<label class="campo">Senha (mínimo 8 caracteres)
+					<input type="password" name="senha" required minlength="8" maxlength="128" autocomplete="new-password">
+				</label>
+				<button class="botao" type="submit">Criar conta</button>
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<p>© 2026 — Biblioteca Stüker</p>
+	</footer>
+	<script src="/static/app.js"></script>
+</body>
+</html>

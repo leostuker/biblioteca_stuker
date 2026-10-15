@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Empréstimos — Biblioteca Stüker</title>
+	<meta name="description" content="Controle de empréstimos de livros da Biblioteca Stüker.">
+	<meta property="og:title" content="Empréstimos — Biblioteca Stüker">
+	<meta property="og:description" content="Controle de empréstimos de livros.">
+	<meta property="og:type" content="website">
+	<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-pagina="emprestimos">
+	<header>
+		<h1><a href="/">Biblioteca Stüker</a></h1>
+		<nav id="navegacao" aria-label="Navegação principal"></nav>
+	</header>
+
+	<main id="main-content">
+		<p id="mensagem" class="mensagem" role="status" hidden></p>
+
+		<section class="bloco">
+			<h2>Empréstimos</h2>
+			<div class="tabela-rolavel">
+				<table>
+					<thead>
+						<tr>
+							<th>Livro</th>
+							<th>Pessoa</th>
+							<th>Saída</th>
+							<th>Previsto</th>
+							<th>Situação</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id="corpo-emprestimos"></tbody>
+				</table>
+			</div>
+		</section>
+
+		<section id="bloco-novo-usuario" class="bloco" hidden>
+			<h2>Cadastrar pessoa</h2>
+			<form id="form-novo-usuario" class="formulario">
+				<div class="linha-campos">
+					<label class="campo">Nome
+						<input type="text" name="nome" required maxlength="255">
+					</label>
+					<label class="campo">E-mail
+						<input type="email" name="email" required maxlength="255">
+					</label>
+				</div>
+				<div class="linha-campos">
+					<label class="campo">Telefone
+						<input type="tel" name="telefone" maxlength="50">
+					</label>
+					<label class="campo">Senha provisória
+						<input type="text" name="senha" required minlength="8" maxlength="128" autocomplete="off">
+					</label>
+				</div>
+				<button class="botao" type="submit">Cadastrar</button>
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<p>© 2026 — Biblioteca Stüker</p>
+	</footer>
+	<script src="/static/app.js"></script>
+</body>
+</html>
