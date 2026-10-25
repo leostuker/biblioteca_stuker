@@ -3,14 +3,14 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER:-biblioteca}
+      POSTGRES_PASSWORD: ${DB_PASS:-biblioteca_secret_123}
+      POSTGRES_DB: ${DB_NAME:-biblioteca_db}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -18,12 +18,25 @@ services:
   web:
     build: .
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_USER: ${DB_USER:-biblioteca}
+      DB_PASS: ${DB_PASS:-biblioteca_secret_123}
+      DB_NAME: ${DB_NAME:-biblioteca_db}
+      SECRET_KEY: ${SECRET_KEY:-ce06b16aa5bdb0205bcbaac29c1e8ec452cc8a62d95bb07731ecf1b413c65673}
+      COOKIE_SEGURO: ${COOKIE_SEGURO:-false}
+      ADMIN_NOME: ${ADMIN_NOME:-Administrador}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@exemplo.com}
+      ADMIN_PASS: ${ADMIN_PASS:-admin123456}
     depends_on:
       db:
         condition: service_healthy
     ports:
-      - "${BIND_IP:-127.0.0.1}:${PORTA_HOST:-5789}:8000"
+      - "${BIND_IP:-0.0.0.0}:${PORTA_HOST:-5789}:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 30s

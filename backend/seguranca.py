@@ -22,7 +22,7 @@ def verificar_senha(senha: str, senha_hash: str) -> bool:
 
 
 def assinar(conteudo: str) -> str:
-	chave = os.environ["SECRET_KEY"].encode()
+	chave = os.getenv("SECRET_KEY", "chave_padrao_biblioteca_stuker_2026").encode()
 	return hmac.new(chave, conteudo.encode(), hashlib.sha256).hexdigest()
 
 
