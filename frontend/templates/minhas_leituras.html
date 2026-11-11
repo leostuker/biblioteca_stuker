@@ -5,13 +5,13 @@
 {% block content %}
 <div class="page-heading">
 	<h1>Minhas Leituras</h1>
-	<a href="/" class="btn">&larr; Catálogo Completo</a>
+	<a href="/" class="btn btn-secondary">&larr; Catálogo Completo</a>
 </div>
 
 <div class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Lendo Atualmente ({{ leituras.lendo|length }})</h2>
+	<h2 class="section-title">Lendo Atualmente ({{ leituras.lendo|length }})</h2>
 	{% if leituras.lendo %}
-		<table class="table-tumblr">
+		<table class="table-custom">
 			<thead>
 				<tr>
 					<th>Livro</th>
@@ -37,7 +37,7 @@
 									<option value="abandonado">Abandonar</option>
 									<option value="remover">Remover</option>
 								</select>
-								<button type="submit" class="btn btn-sm">OK</button>
+								<button type="submit" class="btn btn-sm btn-primary">OK</button>
 							</form>
 						</td>
 					</tr>
@@ -50,9 +50,9 @@
 </div>
 
 <div class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Quero Ler ({{ leituras.quero_ler|length }})</h2>
+	<h2 class="section-title">Quero Ler ({{ leituras.quero_ler|length }})</h2>
 	{% if leituras.quero_ler %}
-		<table class="table-tumblr">
+		<table class="table-custom">
 			<thead>
 				<tr>
 					<th>Livro</th>
@@ -77,7 +77,7 @@
 									<option value="lido">Marcar como Lido</option>
 									<option value="remover">Remover</option>
 								</select>
-								<button type="submit" class="btn btn-sm">OK</button>
+								<button type="submit" class="btn btn-sm btn-primary">OK</button>
 							</form>
 						</td>
 					</tr>
@@ -90,9 +90,9 @@
 </div>
 
 <div class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Livros Lidos ({{ leituras.lido|length }})</h2>
+	<h2 class="section-title">Livros Lidos ({{ leituras.lido|length }})</h2>
 	{% if leituras.lido %}
-		<table class="table-tumblr">
+		<table class="table-custom">
 			<thead>
 				<tr>
 					<th>Livro</th>
@@ -122,7 +122,7 @@
 							{% endif %}
 						</td>
 						<td>
-							<a href="/livros/{{ item.livro_id }}" class="btn btn-sm">Ver Obra</a>
+							<a href="/livros/{{ item.livro_id }}" class="btn btn-secondary btn-sm">Ver Obra</a>
 						</td>
 					</tr>
 				{% endfor %}

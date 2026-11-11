@@ -5,13 +5,13 @@
 {% block content %}
 <div class="page-heading">
 	<h1>{% if livro and livro.id %}Editar Obra: {{ livro.titulo }}{% else %}Catalogar Nova Obra{% endif %}</h1>
-	<a href="{% if livro and livro.id %}/livros/{{ livro.id }}{% else %}/{% endif %}" class="btn">&larr; Voltar</a>
+	<a href="{% if livro and livro.id %}/livros/{{ livro.id }}{% else %}/{% endif %}" class="btn btn-secondary">&larr; Voltar</a>
 </div>
 
 {% if not livro or not livro.id %}
-	<div class="post-card" style="background-color: var(--card-alt); border: 1px solid var(--border-soft); margin-bottom: 20px;">
-		<h2 class="post-title" style="font-size: 16px; margin-bottom: 8px;">Importação Rápida por ISBN</h2>
-		<p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
+	<div class="post-card" style="background-color: var(--bg-card-alt); border: 1px solid var(--border-subtle); margin-bottom: 20px;">
+		<h2 class="section-subtitle">Importação Rápida por ISBN</h2>
+		<p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">
 			Digite ou passe o leitor de código de barras no ISBN (10 ou 13 dígitos). O sistema consulta automaticamente a Open Library, o Google Books e a Fundação Biblioteca Nacional.
 		</p>
 		<form action="/admin/livros/novo" method="get" class="inline-actions">

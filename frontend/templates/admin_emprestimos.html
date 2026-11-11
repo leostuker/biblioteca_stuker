@@ -5,11 +5,11 @@
 {% block content %}
 <div class="page-heading">
 	<h1>Controle de Empréstimos</h1>
-	<a href="/" class="btn">&larr; Catálogo</a>
+	<a href="/" class="btn btn-secondary">&larr; Catálogo</a>
 </div>
 
 <div class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Registrar Novo Empréstimo</h2>
+	<h2 class="section-title">Registrar Novo Empréstimo</h2>
 	<form action="/admin/emprestimos/novo" method="post">
 		<div class="book-layout">
 			<div class="form-group" style="flex: 2;">
@@ -50,9 +50,9 @@
 </div>
 
 <div class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Histórico de Empréstimos</h2>
+	<h2 class="section-title">Histórico de Empréstimos</h2>
 	{% if emprestimos %}
-		<table class="table-tumblr">
+		<table class="table-custom">
 			<thead>
 				<tr>
 					<th>Livro</th>

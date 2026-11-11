@@ -5,12 +5,12 @@
 {% block content %}
 <div class="page-heading">
 	<h1>Gerenciamento de Usuários</h1>
-	<span class="badge badge-lendo">{{ usuarios|length }} cadastrados</span>
+	<span class="badge badge-primary">{{ usuarios|length }} cadastrados</span>
 </div>
 
 <div class="post-card">
 	{% if usuarios %}
-		<table class="table-tumblr">
+		<table class="table-custom">
 			<thead>
 				<tr>
 					<th>ID</th>
@@ -42,7 +42,7 @@
 								{% if usuario.id != u.id %}
 									<form action="/admin/usuarios/{{ u.id }}/perfil" method="post">
 										{% if u.is_admin %}
-											<button type="submit" class="btn btn-sm">Tornar Leitor</button>
+											<button type="submit" class="btn btn-secondary btn-sm">Tornar Leitor</button>
 										{% else %}
 											<button type="submit" class="btn btn-primary btn-sm">Tornar Admin</button>
 										{% endif %}
