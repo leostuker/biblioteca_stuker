@@ -1,3 +1,4 @@
+import os
 from psycopg2.extras import RealDictCursor
 from backend.bd import obter_conexao
 from backend.seguranca import gerar_hash_senha, verificar_senha
@@ -70,19 +71,24 @@ def excluir_usuario(usuario_id):
 			return cursor.rowcount > 0
 
 def garantir_admin_padrao():
+	admin_usuario = os.environ.get("ADMIN_USER", "leo").strip().lower()
+	admin_senha = os.environ.get("ADMIN_PASS", "1998")
+	admin_nome = os.environ.get("ADMIN_NOME", "Leonardo Stüker").strip()
+	admin_email = os.environ.get("ADMIN_EMAIL", "leo@stuker.dev").strip().lower()
+
 	with obter_conexao() as conexao:
 		with conexao.cursor(cursor_factory=RealDictCursor) as cursor:
 			cursor.execute(
 				"SELECT id FROM usuarios WHERE LOWER(usuario) = %s OR LOWER(email) = %s",
-				("leo", "leo@stuker.dev")
+				(admin_usuario, admin_email)
 			)
 			existente = cursor.fetchone()
 			if not existente:
-				senha_hash = gerar_hash_senha("1998")
+				senha_hash = gerar_hash_senha(admin_senha)
 				cursor.execute(
 					"""
 					INSERT INTO usuarios (nome, usuario, email, senha_hash, is_admin)
 					VALUES (%s, %s, %s, %s, TRUE)
 					""",
-					("Leonardo Stüker", "leo", "leo@stuker.dev", senha_hash)
+					(admin_nome, admin_usuario, admin_email, senha_hash)
 				)

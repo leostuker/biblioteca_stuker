@@ -38,6 +38,10 @@ services:
       - DB_NAME=${DB_NAME:-biblioteca_stuker}
       - DATABASE_URL=postgresql://${DB_USER:-leo}:${DB_PASS:-1998}@postgres:5432/${DB_NAME:-biblioteca_stuker}
       - SECRET_KEY=${SECRET_KEY:-chave_secreta_biblioteca_stuker_1998}
+      - ADMIN_USER=${ADMIN_USER:-leo}
+      - ADMIN_PASS=${ADMIN_PASS:-1998}
+      - ADMIN_NOME=${ADMIN_NOME:-Leonardo Stüker}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-leo@stuker.dev}
     volumes:
       - ./dados:/app/dados:ro
     healthcheck:
