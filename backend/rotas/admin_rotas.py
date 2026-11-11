@@ -20,16 +20,54 @@ from backend.servicos.usuarios_servico import (
 	alternar_perfil_admin,
 	excluir_usuario
 )
+from backend.servicos.isbn_servico import buscar_dados_isbn
 
 router = APIRouter(prefix="/admin")
 templates = Jinja2Templates(directory="frontend/templates")
 
 @router.get("/livros/novo")
-def form_novo_livro(request: Request, admin=Depends(exigir_admin)):
+def form_novo_livro(
+	request: Request,
+	buscar_isbn: Optional[str] = None,
+	admin=Depends(exigir_admin)
+):
+	livro_dados = None
+	tags_str = ""
+	mensagem_sucesso = None
+	mensagem_erro = None
+
+	if buscar_isbn and buscar_isbn.strip():
+		dados, provedor, erro = buscar_dados_isbn(buscar_isbn.strip())
+		if dados and dados.get("titulo"):
+			livro_dados = {
+				"titulo": dados.get("titulo", ""),
+				"autor": dados.get("autor", ""),
+				"editora": dados.get("editora", ""),
+				"ano_publicacao": dados.get("ano_publicacao"),
+				"paginas": dados.get("paginas"),
+				"formato": "Físico",
+				"isbn_13": dados.get("isbn", ""),
+				"isbn_10": "",
+				"capa_url": dados.get("capa_url", ""),
+				"sinopse": dados.get("sinopse", "")
+			}
+			tags_str = dados.get("assunto", "")
+			mensagem_sucesso = f"Dados importados com sucesso via {provedor}! Revise antes de cadastrar."
+		else:
+			livro_dados = {"isbn_13": dados.get("isbn") if dados else buscar_isbn.strip()}
+			mensagem_erro = erro or "Não foi possível encontrar dados para este ISBN."
+
 	return templates.TemplateResponse(
 		request=request,
 		name="admin_livro_form.html",
-		context={"usuario": admin, "livro": None}
+		context={
+			"usuario": admin,
+			"livro": livro_dados,
+			"tags_str": tags_str,
+			"buscar_isbn": buscar_isbn or "",
+			"mensagem_sucesso": mensagem_sucesso,
+			"mensagem_erro": mensagem_erro
+		}
 	)
 
 @router.post("/livros/novo")
