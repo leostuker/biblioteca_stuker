@@ -3,42 +3,52 @@
 {% block title %}{{ livro.titulo }} &bull; Biblioteca Stüker{% endblock %}
 
 {% block content %}
-<article class="post-card">
-	<div class="book-layout">
-		{% if livro.capa_url %}
-			<img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="book-cover">
-		{% else %}
-			<div class="book-cover-placeholder">{{ livro.titulo }}</div>
-		{% endif %}
+<div class="breadcrumb-nav">
+	<a href="/">&larr; Voltar ao Acervo Geral</a>
+</div>
 
-		<div class="book-content">
-			<div class="inline-actions" style="justify-content: space-between; margin-bottom: 8px;">
-				<div>
-					{% if livro.disponivel %}
-						<span class="badge badge-disponivel">Disponível</span>
-					{% else %}
-						<span class="badge badge-emprestado">Emprestado</span>
-					{% endif %}
-					<span class="badge badge-lido">{{ livro.formato or 'Físico' }}</span>
+<article class="post-card book-details-card">
+	<div class="book-details-layout">
+		<div class="book-details-cover-container">
+			{% if livro.capa_url %}
+				<img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="book-details-cover-img">
+			{% else %}
+				<div class="book-cover-placeholder book-details-cover-placeholder">
+					<svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+					</svg>
+					<span>{{ livro.titulo }}</span>
 				</div>
+			{% endif %}
 
-				{% if meu_status %}
-					<div>
-						{% if meu_status == 'quero_ler' %}
-							<span class="badge badge-quero-ler">Quero Ler</span>
-						{% elif meu_status == 'lendo' %}
-							<span class="badge badge-lendo">Lendo</span>
-						{% elif meu_status == 'lido' %}
-							<span class="badge badge-lido">Lido</span>
-						{% elif meu_status == 'abandonado' %}
-							<span class="badge badge-abandonado">Abandonado</span>
-						{% endif %}
-					</div>
+			<div class="book-details-badges">
+				{% if livro.disponivel %}
+					<span class="badge badge-disponivel">Disponível no Acervo</span>
+				{% else %}
+					<span class="badge badge-emprestado">Atualmente Emprestado</span>
 				{% endif %}
+				<span class="badge badge-lido">{{ livro.formato or 'Livro Físico' }}</span>
 			</div>
+		</div>
 
-			<h1 class="post-title">{{ livro.titulo }}</h1>
-			<div class="post-subtitle">por {{ livro.autor }}{% if livro.ano_publicacao %} &bull; {{ livro.ano_publicacao }}{% endif %}</div>
+		<div class="book-details-content">
+			{% if meu_status %}
+				<div class="shelf-status-tag">
+					{% if meu_status == 'quero_ler' %}
+						<span class="badge badge-quero-ler">Na sua lista: Quero Ler</span>
+					{% elif meu_status == 'lendo' %}
+						<span class="badge badge-lendo">Na sua estante: Lendo Atualmente</span>
+					{% elif meu_status == 'lido' %}
+						<span class="badge badge-lido">Na sua estante: Obra Já Lida</span>
+					{% elif meu_status == 'abandonado' %}
+						<span class="badge badge-abandonado">Na sua estante: Leitura Abandonada</span>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			<h1 class="book-details-title">{{ livro.titulo }}</h1>
+			<div class="book-details-author">por <strong>{{ livro.autor }}</strong>{% if livro.ano_publicacao %} &bull; {{ livro.ano_publicacao }}{% endif %}</div>
 
 			<div class="meta-grid">
 				<div class="meta-item">
@@ -60,29 +70,32 @@
 			</div>
 
 			{% if livro.sinopse %}
-				<blockquote class="quote-block">
-					{{ livro.sinopse }}
-				</blockquote>
+				<div class="book-synopsis-section">
+					<h3 class="section-subtitle">Sinopse</h3>
+					<div class="book-synopsis-text">
+						{{ livro.sinopse }}
+					</div>
+				</div>
 			{% endif %}
 
 			{% if usuario %}
-				<div style="background-color: var(--card-alt); border: 1px solid var(--border-soft); border-radius: 4px; padding: 14px; margin-top: 18px;">
-					<strong style="display: block; font-size: 12px; text-transform: uppercase; margin-bottom: 8px;">Minha Estante</strong>
+				<div class="book-actions-box">
+					<span class="actions-box-title">Minha Estante de Leitura</span>
 					<form action="/livros/{{ livro.id }}/status-leitura" method="post" class="inline-actions">
 						<input type="hidden" name="origem" value="/livros/{{ livro.id }}">
-						<select name="status" class="form-control" style="width: auto; padding: 6px 10px;">
+						<select name="status" class="form-control" style="width: auto; min-width: 190px;">
 							<option value="quero_ler" {% if meu_status == 'quero_ler' %}selected{% endif %}>Quero Ler</option>
 							<option value="lendo" {% if meu_status == 'lendo' %}selected{% endif %}>Lendo</option>
 							<option value="lido" {% if meu_status == 'lido' %}selected{% endif %}>Lido</option>
 							<option value="abandonado" {% if meu_status == 'abandonado' %}selected{% endif %}>Abandonado</option>
 							<option value="remover">Remover da Estante</option>
 						</select>
-						<button type="submit" class="btn btn-primary btn-sm">Salvar Status</button>
+						<button type="submit" class="btn btn-primary">Atualizar Status</button>
 					</form>
 				</div>
 			{% else %}
-				<div class="alert alert-info" style="margin-top: 18px;">
-					<a href="/login">Entre na sua conta</a> para registrar o progresso deste livro na sua estante pessoal.
+				<div class="alert alert-info" style="margin-top: 20px;">
+					<a href="/login">Faça login</a> para marcar o progresso de leitura desta obra na sua estante pessoal.
 				</div>
 			{% endif %}
 		</div>
@@ -90,17 +103,16 @@
 
 	<div class="post-footer">
 		<div class="tags">
-			<a href="/" class="tag">&larr; voltar ao catálogo</a>
 			{% for t in livro.tags %}
-				<a href="/?tag={{ t }}" class="tag">#{{ t }}</a>
+				<a href="/?tag={{ t }}" class="tag-chip">#{{ t }}</a>
 			{% endfor %}
 		</div>
 
 		{% if usuario and usuario.is_admin %}
 			<div class="inline-actions">
-				<a href="/admin/livros/{{ livro.id }}/editar" class="btn btn-sm">Editar</a>
+				<a href="/admin/livros/{{ livro.id }}/editar" class="btn btn-secondary btn-sm">Editar Dados</a>
 				<form action="/admin/livros/{{ livro.id }}/excluir" method="post" onsubmit="return confirm('Tem certeza que deseja excluir esta obra?');">
-					<button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+					<button type="submit" class="btn btn-danger btn-sm">Excluir Obra</button>
 				</form>
 			</div>
 		{% endif %}
@@ -108,18 +120,18 @@
 </article>
 
 <section class="post-card">
-	<h2 class="post-title" style="font-size: 20px; margin-bottom: 16px;">Avaliações &amp; Resenhas</h2>
+	<h2 class="section-title">Avaliações &amp; Resenhas</h2>
 
 	{% if usuario %}
-		<div style="background-color: var(--card-alt); border: 1px solid var(--border-soft); border-radius: 4px; padding: 16px; margin-bottom: 24px;">
-			<h3 style="font-size: 16px; margin-bottom: 10px;">
-				{% if minha_resenha %}Editar Minha Resenha{% else %}Escrever uma Resenha{% endif %}
+		<div class="review-form-box">
+			<h3 class="section-subtitle">
+				{% if minha_resenha %}Editar Minha Resenha{% else %}Escrever uma Avaliação{% endif %}
 			</h3>
 			<form action="/livros/{{ livro.id }}/resenha" method="post">
 				<div class="form-group">
-					<label for="nota" class="form-label">Nota (1 a 5 estrelas)</label>
-					<select name="nota" id="nota" class="form-control" style="width: auto;">
-						<option value="5" {% if minha_resenha and minha_resenha.nota == 5 %}selected{% endif %}>★★★★★ (5 - Excelente)</option>
+					<label for="nota" class="form-label">Classificação por Estrelas</label>
+					<select name="nota" id="nota" class="form-control" style="width: auto; min-width: 220px;">
+						<option value="5" {% if minha_resenha and minha_resenha.nota == 5 %}selected{% endif %}>★★★★★ (5 - Obra-prima)</option>
 						<option value="4" {% if minha_resenha and minha_resenha.nota == 4 %}selected{% endif %}>★★★★☆ (4 - Muito bom)</option>
 						<option value="3" {% if minha_resenha and minha_resenha.nota == 3 %}selected{% endif %}>★★★☆☆ (3 - Bom)</option>
 						<option value="2" {% if minha_resenha and minha_resenha.nota == 2 %}selected{% endif %}>★★☆☆☆ (2 - Regular)</option>
@@ -128,9 +140,9 @@
 				</div>
 				<div class="form-group">
 					<label for="texto" class="form-label">Comentário / Impressões de Leitura</label>
-					<textarea name="texto" id="texto" class="form-control" placeholder="Escreva o que achou da obra...">{{ minha_resenha.texto if minha_resenha else '' }}</textarea>
+					<textarea name="texto" id="texto" class="form-control" placeholder="Escreva suas impressões sobre o livro...">{{ minha_resenha.texto if minha_resenha else '' }}</textarea>
 				</div>
-				<button type="submit" class="btn btn-primary">Salvar Resenha</button>
+				<button type="submit" class="btn btn-primary">Publicar Resenha</button>
 			</form>
 		</div>
 	{% endif %}
@@ -139,16 +151,16 @@
 		{% for res in livro.resenhas %}
 			<div class="review-item">
 				<div class="review-header">
-					<strong>{{ res.usuario_nome }} (@{{ res.usuario_login }})</strong>
+					<strong>{{ res.usuario_nome }} <span class="review-handle">(@{{ res.usuario_login }})</span></strong>
 					<span class="stars">
 						{% for i in range(res.nota) %}★{% endfor %}{% for i in range(5 - res.nota) %}☆{% endfor %}
 					</span>
 				</div>
-				<p style="white-space: pre-line;">{{ res.texto }}</p>
+				<p class="review-body">{{ res.texto }}</p>
 			</div>
 		{% endfor %}
 	{% else %}
-		<div class="empty-state">Nenhuma resenha registrada para este livro ainda.</div>
+		<div class="empty-state">Nenhuma resenha registrada para esta obra até o momento.</div>
 	{% endif %}
 </section>
 {% endblock %}

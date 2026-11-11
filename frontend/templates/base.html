@@ -5,6 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{% block title %}Biblioteca Stüker{% endblock %}</title>
 	<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -25,7 +28,7 @@
 					</form>
 				{% else %}
 					<a href="/login">Entrar</a>
-					<a href="/registro">Criar Conta</a>
+					<a href="/registro" class="btn btn-primary btn-sm">Criar Conta</a>
 				{% endif %}
 			</nav>
 		</div>
@@ -36,7 +39,7 @@
 	</main>
 
 	<footer class="footer">
-		<p>© 2026 Leonardo Stüker &bull; Biblioteca Pessoal &amp; Acervo de Leituras</p>
+		<p>© 2026 Leonardo Stüker &bull; Acervo &amp; Biblioteca Pessoal</p>
 	</footer>
 </body>
 </html>

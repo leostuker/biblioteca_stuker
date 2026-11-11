@@ -3,110 +3,94 @@
 {% block title %}Catálogo &bull; Biblioteca Stüker{% endblock %}
 
 {% block content %}
-<div class="layout-feed">
-	<section>
-		<div class="page-heading">
-			<h1>Acervo &bull; Ordem Alfabética</h1>
-			<span class="badge badge-lendo">{{ livros|length }} títulos</span>
-		</div>
+<div class="catalog-header">
+	<div class="catalog-title-group">
+		<h1>Acervo Geral</h1>
+		<span class="badge badge-primary">{{ livros|length }} títulos</span>
+	</div>
 
-		{% if tag_filtro %}
-			<div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
-				<span>Filtrando pela tag: <strong>#{{ tag_filtro }}</strong></span>
-				<a href="/" class="btn btn-sm">Limpar Filtro</a>
-			</div>
+	<form action="/" method="get" class="catalog-search-form">
+		<input type="text" name="q" value="{{ termo_busca }}" placeholder="Buscar por título, autor, ISBN..." class="form-control catalog-search-input">
+		<button type="submit" class="btn btn-primary">Buscar</button>
+		{% if usuario and usuario.is_admin %}
+			<a href="/admin/livros/novo" class="btn btn-secondary">+ Livro</a>
 		{% endif %}
+	</form>
+</div>
 
-		{% if termo_busca %}
-			<div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
-				<span>Buscando por: <strong>"{{ termo_busca }}"</strong></span>
-				<a href="/" class="btn btn-sm">Limpar Busca</a>
-			</div>
-		{% endif %}
+{% if tags_populares %}
+	<div class="tags-bar">
+		<a href="/" class="tag-chip {% if not tag_filtro %}active{% endif %}">#todos ({{ livros|length }})</a>
+		{% for tp in tags_populares %}
+			<a href="/?tag={{ tp.nome }}" class="tag-chip {% if tag_filtro == tp.nome %}active{% endif %}">#{{ tp.nome }} ({{ tp.total_livros }})</a>
+		{% endfor %}
+	</div>
+{% endif %}
 
-		{% if livros %}
-			{% for livro in livros %}
-				<article class="post-card">
-					<div class="book-layout">
-						{% if livro.capa_url %}
-							<img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="book-cover">
-						{% else %}
-							<div class="book-cover-placeholder">{{ livro.titulo }}</div>
-						{% endif %}
+{% if tag_filtro %}
+	<div class="alert alert-info filter-alert">
+		<span>Filtrando pela tag: <strong>#{{ tag_filtro }}</strong></span>
+		<a href="/" class="btn btn-sm">Limpar Filtro</a>
+	</div>
+{% endif %}
 
-						<div class="book-content">
-							<h2 class="post-title">
-								<a href="/livros/{{ livro.id }}">{{ livro.titulo }}</a>
-							</h2>
-							<div class="post-subtitle">por {{ livro.autor }}{% if livro.ano_publicacao %} ({{ livro.ano_publicacao }}){% endif %}</div>
+{% if termo_busca %}
+	<div class="alert alert-info filter-alert">
+		<span>Buscando por: <strong>"{{ termo_busca }}"</strong></span>
+		<a href="/" class="btn btn-sm">Limpar Busca</a>
+	</div>
+{% endif %}
 
-							{% if livro.sinopse %}
-								<blockquote class="quote-block">
-									{{ livro.sinopse[:240] }}{% if livro.sinopse|length > 240 %}...{% endif %}
-								</blockquote>
-							{% endif %}
-
-							<div class="inline-actions" style="margin-top: 12px;">
-								{% if livro.disponivel %}
-									<span class="badge badge-disponivel">Disponível</span>
-								{% else %}
-									<span class="badge badge-emprestado">Emprestado</span>
-								{% endif %}
-								<span class="badge badge-lido">{{ livro.formato or 'Físico' }}</span>
-								<a href="/livros/{{ livro.id }}" class="btn btn-sm">Ver Detalhes</a>
-							</div>
+{% if livros %}
+	<div class="books-grid">
+		{% for livro in livros %}
+			<article class="book-card">
+				<a href="/livros/{{ livro.id }}" class="book-card-cover-wrap">
+					{% if livro.capa_url %}
+						<img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="book-card-cover-img" loading="lazy">
+					{% else %}
+						<div class="book-cover-placeholder">
+							<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6">
+								<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+								<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+							</svg>
+							<span>{{ livro.titulo }}</span>
 						</div>
-					</div>
+					{% endif %}
 
-					<div class="post-footer">
-						<div class="tags">
-							{% for t in livro.tags %}
+					<div class="book-card-badge">
+						{% if livro.disponivel %}
+							<span class="badge badge-disponivel">Disponível</span>
+						{% else %}
+							<span class="badge badge-emprestado">Emprestado</span>
+						{% endif %}
+					</div>
+				</a>
+
+				<div class="book-card-body">
+					<h2 class="book-card-title">
+						<a href="/livros/{{ livro.id }}">{{ livro.titulo }}</a>
+					</h2>
+					<div class="book-card-author">{{ livro.autor }}{% if livro.ano_publicacao %} &bull; {{ livro.ano_publicacao }}{% endif %}</div>
+
+					<div class="book-card-footer">
+						<div class="book-card-tags">
+							{% for t in livro.tags[:2] %}
 								<a href="/?tag={{ t }}" class="tag">#{{ t }}</a>
 							{% endfor %}
 						</div>
 						{% if usuario and usuario.is_admin %}
-							<div class="inline-actions">
-								<a href="/admin/livros/{{ livro.id }}/editar" class="tag">editar</a>
-							</div>
+							<a href="/admin/livros/{{ livro.id }}/editar" class="book-card-edit">editar</a>
 						{% endif %}
 					</div>
-				</article>
-			{% endfor %}
-		{% else %}
-			<div class="post-card empty-state">
-				Nenhum livro encontrado no acervo com esses termos.
-			</div>
-		{% endif %}
-	</section>
-
-	<aside>
-		<div class="sidebar-box">
-			<div class="sidebar-title">Buscar no Acervo</div>
-			<form action="/" method="get">
-				<input type="text" name="q" value="{{ termo_busca }}" placeholder="Título, autor, ISBN..." class="sidebar-input">
-				<button type="submit" class="btn btn-primary" style="width: 100%;">Pesquisar</button>
-			</form>
-		</div>
-
-		{% if tags_populares %}
-			<div class="sidebar-box">
-				<div class="sidebar-title">Tags &amp; Temas</div>
-				<ul class="sidebar-list">
-					<li><a href="/">#todos ({{ livros|length }})</a></li>
-					{% for tp in tags_populares %}
-						<li><a href="/?tag={{ tp.nome }}">#{{ tp.nome }} ({{ tp.total_livros }})</a></li>
-					{% endfor %}
-				</ul>
-			</div>
-		{% endif %}
-
-		{% if usuario and usuario.is_admin %}
-			<div class="sidebar-box">
-				<div class="sidebar-title">Administração</div>
-				<a href="/admin/livros/novo" class="btn btn-success" style="width: 100%; text-align: center; margin-bottom: 8px;">+ Catalogar Livro</a>
-				<a href="/admin/emprestimos" class="btn" style="width: 100%; text-align: center;">Gerenciar Empréstimos</a>
-			</div>
-		{% endif %}
-	</aside>
-</div>
+				</div>
+			</article>
+		{% endfor %}
+	</div>
+{% else %}
+	<div class="post-card empty-state">
+		<p>Nenhum título encontrado com os critérios selecionados.</p>
+		<a href="/" class="btn btn-primary" style="margin-top: 14px;">Ver todo o acervo</a>
+	</div>
+{% endif %}
 {% endblock %}
