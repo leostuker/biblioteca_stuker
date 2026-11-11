@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Empréstimos &bull; Biblioteca Stüker{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+	<h1>Controle de Empréstimos</h1>
+	<a href="/" class="btn">&larr; Catálogo</a>
+</div>
+
+<div class="post-card">
+	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Registrar Novo Empréstimo</h2>
+	<form action="/admin/emprestimos/novo" method="post">
+		<div class="book-layout">
+			<div class="form-group" style="flex: 2;">
+				<label for="livro_id" class="form-label">Livro Disponível *</label>
+				<select name="livro_id" id="livro_id" required class="form-control">
+					<option value="">Selecione uma obra...</option>
+					{% for l in livros %}
+						<option value="{{ l.id }}">{{ l.titulo }} — {{ l.autor }}</option>
+					{% endfor %}
+				</select>
+			</div>
+
+			<div class="form-group" style="flex: 2;">
+				<label for="nome_destinatario" class="form-label">Nome do Amigo / Destinatário *</label>
+				<input type="text" name="nome_destinatario" id="nome_destinatario" required placeholder="Para quem emprestou" class="form-control">
+			</div>
+		</div>
+
+		<div class="book-layout">
+			<div class="form-group" style="flex: 1;">
+				<label for="contato" class="form-label">Contato / WhatsApp</label>
+				<input type="text" name="contato" id="contato" placeholder="(51) 99999-9999" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 1;">
+				<label for="data_previsao" class="form-label">Previsão de Devolução</label>
+				<input type="date" name="data_previsao" id="data_previsao" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 2;">
+				<label for="observacoes" class="form-label">Observações</label>
+				<input type="text" name="observacoes" id="observacoes" placeholder="Ex: emprestado na aula" class="form-control">
+			</div>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Registrar Empréstimo</button>
+	</form>
+</div>
+
+<div class="post-card">
+	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Histórico de Empréstimos</h2>
+	{% if emprestimos %}
+		<table class="table-tumblr">
+			<thead>
+				<tr>
+					<th>Livro</th>
+					<th>Destinatário</th>
+					<th>Data Empréstimo</th>
+					<th>Previsão</th>
+					<th>Status</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for emp in emprestimos %}
+					<tr>
+						<td><strong><a href="/livros/{{ emp.livro_id }}">{{ emp.livro_titulo }}</a></strong></td>
+						<td>
+							{{ emp.nome_destinatario }}
+							{% if emp.contato_destinatario %}<br><small class="tag">{{ emp.contato_destinatario }}</small>{% endif %}
+						</td>
+						<td>{{ emp.data_emprestimo }}</td>
+						<td>
+							{{ emp.data_devolucao_prevista or 'Sem data' }}
+							{% if emp.atrasado %}<span class="badge badge-emprestado" style="margin-left: 4px;">Atrasado</span>{% endif %}
+						</td>
+						<td>
+							{% if emp.data_devolucao_real %}
+								<span class="badge badge-disponivel">Devolvido ({{ emp.data_devolucao_real }})</span>
+							{% else %}
+								<span class="badge badge-emprestado">Emprestado</span>
+							{% endif %}
+						</td>
+						<td>
+							{% if not emp.data_devolucao_real %}
+								<form action="/admin/emprestimos/{{ emp.id }}/devolver" method="post">
+									<button type="submit" class="btn btn-success btn-sm">Devolver</button>
+								</form>
+							{% else %}
+								<span class="tag">Concluído</span>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="empty-state">Nenhum empréstimo registrado até o momento.</div>
+	{% endif %}
+</div>
+{% endblock %}

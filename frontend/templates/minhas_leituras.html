@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Leituras &bull; Biblioteca Stüker{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+	<h1>Minhas Leituras</h1>
+	<a href="/" class="btn">&larr; Catálogo Completo</a>
+</div>
+
+<div class="post-card">
+	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Lendo Atualmente ({{ leituras.lendo|length }})</h2>
+	{% if leituras.lendo %}
+		<table class="table-tumblr">
+			<thead>
+				<tr>
+					<th>Livro</th>
+					<th>Autor</th>
+					<th>Páginas</th>
+					<th>Status</th>
+					<th>Ação</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in leituras.lendo %}
+					<tr>
+						<td><strong><a href="/livros/{{ item.livro_id }}">{{ item.titulo }}</a></strong></td>
+						<td>{{ item.autor }}</td>
+						<td>{{ item.paginas or 'N/I' }}</td>
+						<td><span class="badge badge-lendo">Lendo</span></td>
+						<td>
+							<form action="/livros/{{ item.livro_id }}/status-leitura" method="post" class="inline-actions">
+								<input type="hidden" name="origem" value="/minhas-leituras">
+								<select name="status" class="form-control" style="width: auto; padding: 4px 6px; font-size: 11px;">
+									<option value="lido">Marcar como Lido</option>
+									<option value="quero_ler">Mover para Quero Ler</option>
+									<option value="abandonado">Abandonar</option>
+									<option value="remover">Remover</option>
+								</select>
+								<button type="submit" class="btn btn-sm">OK</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="empty-state">Você não está lendo nenhum livro no momento.</div>
+	{% endif %}
+</div>
+
+<div class="post-card">
+	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Quero Ler ({{ leituras.quero_ler|length }})</h2>
+	{% if leituras.quero_ler %}
+		<table class="table-tumblr">
+			<thead>
+				<tr>
+					<th>Livro</th>
+					<th>Autor</th>
+					<th>Páginas</th>
+					<th>Status</th>
+					<th>Ação</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in leituras.quero_ler %}
+					<tr>
+						<td><strong><a href="/livros/{{ item.livro_id }}">{{ item.titulo }}</a></strong></td>
+						<td>{{ item.autor }}</td>
+						<td>{{ item.paginas or 'N/I' }}</td>
+						<td><span class="badge badge-quero-ler">Quero Ler</span></td>
+						<td>
+							<form action="/livros/{{ item.livro_id }}/status-leitura" method="post" class="inline-actions">
+								<input type="hidden" name="origem" value="/minhas-leituras">
+								<select name="status" class="form-control" style="width: auto; padding: 4px 6px; font-size: 11px;">
+									<option value="lendo">Iniciar Leitura</option>
+									<option value="lido">Marcar como Lido</option>
+									<option value="remover">Remover</option>
+								</select>
+								<button type="submit" class="btn btn-sm">OK</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="empty-state">Sua lista de desejos está vazia.</div>
+	{% endif %}
+</div>
+
+<div class="post-card">
+	<h2 class="post-title" style="font-size: 20px; margin-bottom: 14px;">Livros Lidos ({{ leituras.lido|length }})</h2>
+	{% if leituras.lido %}
+		<table class="table-tumblr">
+			<thead>
+				<tr>
+					<th>Livro</th>
+					<th>Autor</th>
+					<th>Minha Nota</th>
+					<th>Minha Resenha</th>
+					<th>Ação</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for item in leituras.lido %}
+					<tr>
+						<td><strong><a href="/livros/{{ item.livro_id }}">{{ item.titulo }}</a></strong></td>
+						<td>{{ item.autor }}</td>
+						<td>
+							{% if item.minha_nota %}
+								<span class="stars">{% for i in range(item.minha_nota) %}★{% endfor %}</span>
+							{% else %}
+								<span class="tag">Sem nota</span>
+							{% endif %}
+						</td>
+						<td>
+							{% if item.minha_resenha %}
+								<span style="font-style: italic;">"{{ item.minha_resenha[:60] }}..."</span>
+							{% else %}
+								<a href="/livros/{{ item.livro_id }}" class="tag">avaliar</a>
+							{% endif %}
+						</td>
+						<td>
+							<a href="/livros/{{ item.livro_id }}" class="btn btn-sm">Ver Obra</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="empty-state">Nenhum livro concluído registrado ainda.</div>
+	{% endif %}
+</div>
+{% endblock %}

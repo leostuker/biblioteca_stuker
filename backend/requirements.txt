@@ -1,3 +1,8 @@
 fastapi
-uvicorn
+uvicorn[standard]
 psycopg2-binary
+jinja2
+python-multipart
+itsdangerous
+pytest
+requests

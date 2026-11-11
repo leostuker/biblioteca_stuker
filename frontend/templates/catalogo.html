@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo &bull; Biblioteca Stüker{% endblock %}
+
+{% block content %}
+<div class="layout-feed">
+	<section>
+		<div class="page-heading">
+			<h1>Acervo &bull; Ordem Alfabética</h1>
+			<span class="badge badge-lendo">{{ livros|length }} títulos</span>
+		</div>
+
+		{% if tag_filtro %}
+			<div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
+				<span>Filtrando pela tag: <strong>#{{ tag_filtro }}</strong></span>
+				<a href="/" class="btn btn-sm">Limpar Filtro</a>
+			</div>
+		{% endif %}
+
+		{% if termo_busca %}
+			<div class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center;">
+				<span>Buscando por: <strong>"{{ termo_busca }}"</strong></span>
+				<a href="/" class="btn btn-sm">Limpar Busca</a>
+			</div>
+		{% endif %}
+
+		{% if livros %}
+			{% for livro in livros %}
+				<article class="post-card">
+					<div class="book-layout">
+						{% if livro.capa_url %}
+							<img src="{{ livro.capa_url }}" alt="Capa de {{ livro.titulo }}" class="book-cover">
+						{% else %}
+							<div class="book-cover-placeholder">{{ livro.titulo }}</div>
+						{% endif %}
+
+						<div class="book-content">
+							<h2 class="post-title">
+								<a href="/livros/{{ livro.id }}">{{ livro.titulo }}</a>
+							</h2>
+							<div class="post-subtitle">por {{ livro.autor }}{% if livro.ano_publicacao %} ({{ livro.ano_publicacao }}){% endif %}</div>
+
+							{% if livro.sinopse %}
+								<blockquote class="quote-block">
+									{{ livro.sinopse[:240] }}{% if livro.sinopse|length > 240 %}...{% endif %}
+								</blockquote>
+							{% endif %}
+
+							<div class="inline-actions" style="margin-top: 12px;">
+								{% if livro.disponivel %}
+									<span class="badge badge-disponivel">Disponível</span>
+								{% else %}
+									<span class="badge badge-emprestado">Emprestado</span>
+								{% endif %}
+								<span class="badge badge-lido">{{ livro.formato or 'Físico' }}</span>
+								<a href="/livros/{{ livro.id }}" class="btn btn-sm">Ver Detalhes</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="post-footer">
+						<div class="tags">
+							{% for t in livro.tags %}
+								<a href="/?tag={{ t }}" class="tag">#{{ t }}</a>
+							{% endfor %}
+						</div>
+						{% if usuario and usuario.is_admin %}
+							<div class="inline-actions">
+								<a href="/admin/livros/{{ livro.id }}/editar" class="tag">editar</a>
+							</div>
+						{% endif %}
+					</div>
+				</article>
+			{% endfor %}
+		{% else %}
+			<div class="post-card empty-state">
+				Nenhum livro encontrado no acervo com esses termos.
+			</div>
+		{% endif %}
+	</section>
+
+	<aside>
+		<div class="sidebar-box">
+			<div class="sidebar-title">Buscar no Acervo</div>
+			<form action="/" method="get">
+				<input type="text" name="q" value="{{ termo_busca }}" placeholder="Título, autor, ISBN..." class="sidebar-input">
+				<button type="submit" class="btn btn-primary" style="width: 100%;">Pesquisar</button>
+			</form>
+		</div>
+
+		{% if tags_populares %}
+			<div class="sidebar-box">
+				<div class="sidebar-title">Tags &amp; Temas</div>
+				<ul class="sidebar-list">
+					<li><a href="/">#todos ({{ livros|length }})</a></li>
+					{% for tp in tags_populares %}
+						<li><a href="/?tag={{ tp.nome }}">#{{ tp.nome }} ({{ tp.total_livros }})</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
+
+		{% if usuario and usuario.is_admin %}
+			<div class="sidebar-box">
+				<div class="sidebar-title">Administração</div>
+				<a href="/admin/livros/novo" class="btn btn-success" style="width: 100%; text-align: center; margin-bottom: 8px;">+ Catalogar Livro</a>
+				<a href="/admin/emprestimos" class="btn" style="width: 100%; text-align: center;">Gerenciar Empréstimos</a>
+			</div>
+		{% endif %}
+	</aside>
+</div>
+{% endblock %}

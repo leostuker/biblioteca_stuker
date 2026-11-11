@@ -10,7 +10,7 @@ services:
     volumes:
       - dados_postgres:/var/lib/postgresql/data
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5433}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-leo} -d ${DB_NAME:-biblioteca_stuker}"]
       interval: 10s
@@ -36,6 +36,10 @@ services:
       - DB_USER=${DB_USER:-leo}
       - DB_PASS=${DB_PASS:-1998}
       - DB_NAME=${DB_NAME:-biblioteca_stuker}
+      - DATABASE_URL=postgresql://${DB_USER:-leo}:${DB_PASS:-1998}@postgres:5432/${DB_NAME:-biblioteca_stuker}
+      - SECRET_KEY=${SECRET_KEY:-chave_secreta_biblioteca_stuker_1998}
+    volumes:
+      - ./dados:/app/dados:ro
     healthcheck:
       test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/health\")' || exit 1"]
       interval: 30s

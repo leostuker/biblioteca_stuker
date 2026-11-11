@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Usuários &bull; Biblioteca Stüker{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+	<h1>Gerenciamento de Usuários</h1>
+	<span class="badge badge-lendo">{{ usuarios|length }} cadastrados</span>
+</div>
+
+<div class="post-card">
+	{% if usuarios %}
+		<table class="table-tumblr">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Usuário</th>
+					<th>Nome</th>
+					<th>E-mail</th>
+					<th>Perfil</th>
+					<th>Cadastro</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for u in usuarios %}
+					<tr>
+						<td>#{{ u.id }}</td>
+						<td><strong>{{ u.usuario }}</strong></td>
+						<td>{{ u.nome }}</td>
+						<td>{{ u.email or '—' }}</td>
+						<td>
+							{% if u.is_admin %}
+								<span class="badge badge-lendo">Administrador</span>
+							{% else %}
+								<span class="badge badge-lido">Leitor</span>
+							{% endif %}
+						</td>
+						<td>{{ u.criado_em.strftime('%d/%m/%Y') if u.criado_em else '—' }}</td>
+						<td>
+							<div class="inline-actions">
+								{% if usuario.id != u.id %}
+									<form action="/admin/usuarios/{{ u.id }}/perfil" method="post">
+										{% if u.is_admin %}
+											<button type="submit" class="btn btn-sm">Tornar Leitor</button>
+										{% else %}
+											<button type="submit" class="btn btn-primary btn-sm">Tornar Admin</button>
+										{% endif %}
+									</form>
+									<form action="/admin/usuarios/{{ u.id }}/excluir" method="post" onsubmit="return confirm('Deseja realmente excluir este usuário?');">
+										<button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+									</form>
+								{% else %}
+									<span class="tag">Você (Dono)</span>
+								{% endif %}
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<div class="empty-state">Nenhum usuário cadastrado.</div>
+	{% endif %}
+</div>
+{% endblock %}

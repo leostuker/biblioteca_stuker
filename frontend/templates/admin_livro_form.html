@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{% if livro %}Editar: {{ livro.titulo }}{% else %}Novo Livro{% endif %} &bull; Biblioteca Stüker{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+	<h1>{% if livro %}Editar Obra: {{ livro.titulo }}{% else %}Catalogar Nova Obra{% endif %}</h1>
+	<a href="{% if livro %}/livros/{{ livro.id }}{% else %}/{% endif %}" class="btn">&larr; Voltar</a>
+</div>
+
+<div class="post-card">
+	<form action="{% if livro %}/admin/livros/{{ livro.id }}/editar{% else %}/admin/livros/novo{% endif %}" method="post">
+		<div class="form-group">
+			<label for="titulo" class="form-label">Título da Obra *</label>
+			<input type="text" id="titulo" name="titulo" required value="{{ livro.titulo if livro else '' }}" class="form-control">
+		</div>
+
+		<div class="book-layout">
+			<div class="form-group" style="flex: 1;">
+				<label for="autor" class="form-label">Autor(a) *</label>
+				<input type="text" id="autor" name="autor" required value="{{ livro.autor if livro else '' }}" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 1;">
+				<label for="editora" class="form-label">Editora</label>
+				<input type="text" id="editora" name="editora" value="{{ livro.editora if livro and livro.editora else '' }}" class="form-control">
+			</div>
+		</div>
+
+		<div class="book-layout">
+			<div class="form-group" style="flex: 1;">
+				<label for="ano_publicacao" class="form-label">Ano de Publicação</label>
+				<input type="number" id="ano_publicacao" name="ano_publicacao" value="{{ livro.ano_publicacao if livro and livro.ano_publicacao else '' }}" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 1;">
+				<label for="paginas" class="form-label">Número de Páginas</label>
+				<input type="number" id="paginas" name="paginas" value="{{ livro.paginas if livro and livro.paginas else '' }}" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 1;">
+				<label for="formato" class="form-label">Formato</label>
+				<select id="formato" name="formato" class="form-control">
+					<option value="Físico" {% if livro and livro.formato == 'Físico' %}selected{% endif %}>Físico</option>
+					<option value="E-book" {% if livro and livro.formato == 'E-book' %}selected{% endif %}>E-book</option>
+					<option value="PDF" {% if livro and livro.formato == 'PDF' %}selected{% endif %}>PDF</option>
+					<option value="Audiobook" {% if livro and livro.formato == 'Audiobook' %}selected{% endif %}>Audiobook</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="book-layout">
+			<div class="form-group" style="flex: 1;">
+				<label for="isbn_13" class="form-label">ISBN-13</label>
+				<input type="text" id="isbn_13" name="isbn_13" value="{{ livro.isbn_13 if livro and livro.isbn_13 else '' }}" class="form-control">
+			</div>
+
+			<div class="form-group" style="flex: 1;">
+				<label for="isbn_10" class="form-label">ISBN-10</label>
+				<input type="text" id="isbn_10" name="isbn_10" value="{{ livro.isbn_10 if livro and livro.isbn_10 else '' }}" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="tags" class="form-label">Tags (separadas por vírgula)</label>
+			<input type="text" id="tags" name="tags" value="{{ tags_str if tags_str is defined else '' }}" placeholder="ficcao, fantasia, engenharia, clássico" class="form-control">
+		</div>
+
+		<div class="form-group">
+			<label for="capa_url" class="form-label">URL da Imagem de Capa (opcional)</label>
+			<input type="url" id="capa_url" name="capa_url" value="{{ livro.capa_url if livro and livro.capa_url else '' }}" placeholder="https://..." class="form-control">
+		</div>
+
+		<div class="form-group">
+			<label for="sinopse" class="form-label">Sinopse / Descrição da Obra</label>
+			<textarea id="sinopse" name="sinopse" class="form-control">{{ livro.sinopse if livro and livro.sinopse else '' }}</textarea>
+		</div>
+
+		<div class="post-footer">
+			<span class="tag">Atualização imediata no catálogo</span>
+			<button type="submit" class="btn btn-primary">{% if livro %}Salvar Alterações{% else %}Cadastrar Obra{% endif %}</button>
+		</div>
+	</form>
+</div>
+{% endblock %}

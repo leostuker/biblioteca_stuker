@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}Biblioteca Stüker{% endblock %}</title>
+	<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<header class="topbar">
+		<div class="topbar-inner">
+			<a href="/" class="brand">biblioteca stüker.</a>
+			<nav class="nav-links">
+				<a href="/">Catálogo</a>
+				{% if usuario %}
+					<a href="/minhas-leituras">Minhas Leituras</a>
+					{% if usuario.is_admin %}
+						<a href="/admin/livros/novo">+ Livro</a>
+						<a href="/admin/emprestimos">Empréstimos</a>
+						<a href="/admin/usuarios">Usuários</a>
+					{% endif %}
+					<form action="/logout" method="post" class="nav-form">
+						<button type="submit" class="btn btn-sm">Sair ({{ usuario.usuario }})</button>
+					</form>
+				{% else %}
+					<a href="/login">Entrar</a>
+					<a href="/registro">Criar Conta</a>
+				{% endif %}
+			</nav>
+		</div>
+	</header>
+
+	<main class="container">
+		{% block content %}{% endblock %}
+	</main>
+
+	<footer class="footer">
+		<p>© 2026 Leonardo Stüker &bull; Biblioteca Pessoal &amp; Acervo de Leituras</p>
+	</footer>
+</body>
+</html>
