@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse, JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from backend.bd import iniciar_pool, fechar_pool, inicializar_banco
 from backend.servicos.usuarios_servico import garantir_admin_padrao
 from backend.servicos.importador_csv import importar_libib_csv
@@ -37,3 +39,14 @@ app.include_router(admin_router)
 @app.get("/health")
 def healthcheck():
 	return {"status": "ok", "app": "Biblioteca Stüker"}
+
+@app.get("/pmb")
+@app.get("/pmb/{resto:path}")
+def redirecionar_pmb(resto: str = ""):
+	return RedirectResponse(url="/", status_code=301)
+
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+	if exc.status_code == 404 and "text/html" in request.headers.get("accept", ""):
+		return RedirectResponse(url="/", status_code=302)
+	return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
